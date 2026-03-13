@@ -1,27 +1,23 @@
-# Ollang Claude Code Skills
+# Ollang Agent Skills
 
-A collection of [Claude Code](https://claude.ai/claude-code) skills for interacting with the [Ollang](https://ollang.com) translation platform API via natural language.
+A collection of skills for interacting with the [Ollang](https://ollang.com) translation platform API via natural language — compatible with any agent that supports the skills standard, including [Claude Code](https://claude.ai/claude-code), [Cursor](https://cursor.com), [Devin](https://devin.ai), and others.
 
 ## What are Skills?
 
-Skills are prompt-based extensions for Claude Code that trigger automatically based on your intent. Once installed, you can say things like *"upload this video to Ollang"* or *"check my recent orders"* and Claude will know exactly what to do.
+Skills are prompt-based extensions for AI agents that trigger automatically based on your intent. Once installed, you can say things like *"upload this video to Ollang"* or *"check my recent orders"* and your agent will know exactly what to do.
 
 ---
 
 ## Installation
 
-Copy the skill folders into your Claude Code skills directory:
+Copy the skill folders into your agent's skills directory:
 
+**Claude Code:**
 ```bash
-# Clone or download this repo, then:
-cp -r skills/ollang-* ~/.claude/skills/
+cp -r ollang-* ~/.claude/skills/
 ```
 
-Or install individually:
-
-```bash
-cp -r skills/ollang-upload ~/.claude/skills/
-```
+**Cursor / other agents:** place the skill folders in the skills directory your agent supports (refer to your agent's documentation).
 
 ---
 
@@ -76,5 +72,5 @@ https://api-integration.ollang.com
 ## Notes
 
 - Query params using bracket notation (e.g. `pageOptions[page]`) require curl's `-g` flag (`--globoff`) to prevent URL malformat errors. All skills handle this automatically.
-- Skills are compatible with Claude Code CLI v1.x and above.
+- Skills are compatible with any agent that supports the skills standard (Claude Code, Cursor, Devin, etc.).
 - API docs: [api-docs.ollang.com](https://api-docs.ollang.com)
