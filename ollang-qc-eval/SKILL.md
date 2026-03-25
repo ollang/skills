@@ -39,14 +39,19 @@ All requests require the `X-Api-Key` header from https://lab.ollang.com.
   "creditsUsed": 0,
   "isProcessing": true,
   "textSummary": "string",
-  "scores": {
-    "accuracy": 0.0,
-    "fluency": 0.0,
-    "tone": 0.0,
-    "culturalFit": 0.0,
-    "overall": 0.0
-  },
-  "segmentEvals": []
+  "scores": [
+    { "name": "accuracy", "score": 92, "details": "..." },
+    { "name": "fluency", "score": 85, "details": "..." },
+    { "name": "tone", "score": 90, "details": "..." },
+    { "name": "culturalFit", "score": 88, "details": "..." }
+  ],
+  "segmentEvals": [
+    {
+      "segmentId": "string",
+      "scores": [{ "name": "accuracy", "score": 95 }],
+      "comments": "string"
+    }
+  ]
 }
 ```
 

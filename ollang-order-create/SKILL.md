@@ -39,8 +39,8 @@ All requests require the `X-Api-Key` header from https://lab.ollang.com.
 ### targetLanguageConfigs Format
 ```json
 [
-  { "targetLanguage": "es", "rushDelivery": false },
-  { "targetLanguage": "fr", "rushDelivery": true }
+  { "language": "es", "isRush": false },
+  { "language": "fr", "isRush": true }
 ]
 ```
 
@@ -48,8 +48,8 @@ All requests require the `X-Api-Key` header from https://lab.ollang.com.
 Array of order objects, one per target language:
 ```json
 [
-  { "orderId": "string", "targetLanguage": "es" },
-  { "orderId": "string", "targetLanguage": "fr" }
+  { "orderId": "507f1f77bcf86cd799439015" },
+  { "orderId": "507f1f77bcf86cd799439016" }
 ]
 ```
 
@@ -63,8 +63,8 @@ curl -X POST https://api-integration.ollang.com/integration/order/create \
     "orderType": "subtitle",
     "level": 1,
     "targetLanguageConfigs": [
-      { "targetLanguage": "es", "rushDelivery": false },
-      { "targetLanguage": "fr", "rushDelivery": false }
+      { "language": "es", "isRush": false },
+      { "language": "fr", "isRush": false }
     ],
     "autoQc": true
   }'

@@ -33,7 +33,10 @@ All requests require the `X-Api-Key` header from https://lab.ollang.com.
     {
       "id": "string",
       "name": "string",
-      "createdAt": "ISO8601"
+      "hexColor": "#B6B6B6",
+      "type": "default",
+      "createdAt": "ISO8601",
+      "projectCount": 0
     }
   ],
   "meta": {
@@ -62,7 +65,7 @@ curl -X GET "https://api-integration.ollang.com/integration/folder?search=market
 
 1. Ask the user for their API key if not provided
 2. Ask for optional search term or page size
-3. Display results in a table: ID, Name, Created At
+3. Display results in a table: ID, Name, Type, Color, Project Count, Created At
 4. Folder IDs can be used when uploading files (`folderId` parameter in `ollang-upload`)
 5. Show pagination info and offer to fetch more if available
 

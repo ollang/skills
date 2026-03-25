@@ -23,7 +23,7 @@ Uploads video, audio, document, or spreadsheet files and creates a project.
 | `file` | file | Yes | File to upload (video, audio, document, spreadsheet) |
 | `name` | string | Yes | Descriptive name for the uploaded content |
 | `sourceLanguage` | string | Yes | Source language code (e.g., `en`, `es`, `fr`) |
-| `notes` | array | No | Instruction objects with `details` and optional `timestamps` |
+| `notes` | array | No | Instruction objects with `details` and optional `timeStamp` (e.g., `[{"details": "Ignore subtitles for 30s", "timeStamp": "02:15:30"}]`) |
 | `folderId` | string | No | Destination folder ID (defaults to "API Uploads") |
 
 ### Response (201)
