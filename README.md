@@ -10,14 +10,13 @@ Skills are prompt-based extensions for AI agents that trigger automatically base
 
 ## Installation
 
-Copy the skill folders into your agent's skills directory:
-
-**Claude Code:**
 ```bash
-cp -r ollang-* ~/.claude/skills/
+npx skills add https://github.com/ollang/skills --skill ollang
 ```
 
-**Cursor / other agents:** place the skill folders in the skills directory your agent supports (refer to your agent's documentation).
+That's it — the skills are now available in your agent.
+
+**Manual installation:** copy the skill folders into your agent's skills directory (e.g. `~/.claude/skills/` for Claude Code). For Cursor or other agents, refer to your agent's documentation.
 
 ---
 
