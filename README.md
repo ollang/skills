@@ -43,7 +43,10 @@ That's it — the skills are now available in your agent.
 
 All skills (except `ollang-health`) require an API key from [lab.ollang.com](https://lab.ollang.com).
 
-Pass it as the `X-Api-Key` header — Claude will ask for it if not provided.
+Set the `OLLANG_API_KEY` environment variable before using the skills:
+```bash
+export OLLANG_API_KEY=<your-api-key>
+```
 
 ---
 
