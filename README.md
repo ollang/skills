@@ -26,6 +26,7 @@ That's it — the skills are now available in your agent.
 |-------|------------------------|-------------|
 | `ollang-health` | "is Ollang up?", "check API status" | Health check — no auth required |
 | `ollang-upload` | "upload this file to Ollang", "create a project" | Direct file upload + VTT upload |
+| `ollang-custom-instructions` | "create a custom instruction", "manage translation rules" | CRUD operations for custom translation instructions |
 | `ollang-order-create` | "create a subtitle order", "translate this to Spanish" | Create CC, subtitle, document, or dubbing orders |
 | `ollang-order-get` | "check order status", "get order details" | Get a single order by ID |
 | `ollang-orders-list` | "list my orders", "show recent translations" | Paginated order list with filters |

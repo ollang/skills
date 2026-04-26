@@ -13,6 +13,7 @@ This is the entry point for all Ollang API operations. Based on the user's inten
 |-----------|-------------|
 | `ollang-health` | User wants to check if the API is up |
 | `ollang-upload` | User wants to upload a video, audio, document, or VTT file |
+| `ollang-custom-instructions` | User wants to create, manage, or view custom translation instructions |
 | `ollang-order-create` | User wants to create a translation, CC, subtitle, or dubbing order |
 | `ollang-order-get` | User wants to check the status or details of a specific order |
 | `ollang-orders-list` | User wants to list, search, or filter their orders |
@@ -61,3 +62,45 @@ https://api-integration.ollang.com
 3. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
 4. Execute the operation and present results clearly
 5. Suggest logical next steps (e.g., after upload → offer to create an order)
+
+---
+
+## Reading Error Responses
+
+API errors use a generic envelope with three fields — **always inspect the `detail` field**, not `error` or `message`, as it's the only signal that distinguishes them:
+
+```json
+{
+  "code": -1,
+  "error": "UnknownError",
+  "message": "unknown error",
+  "detail": "<actual message — this is what matters>"
+}
+```
+
+### Common Detail Substrings & Root Causes
+
+| Detail Substring | Meaning | Fix |
+|------------------|---------|-----|
+| `Cannot POST /...` | Wrong endpoint path (typo) | Check endpoint URL in the skill docs |
+| `Unexpected token` | Request body is not valid JSON | Check shell quoting in curl `-d` flag; use single quotes around JSON |
+| `The first argument must be of type string ...` | Downstream microservice bug with Node fetch (chunked encoding issue) | Use curl instead, or set `Content-Length` header explicitly |
+| `Invalid or missing API key` | API key missing or invalid | Run `export OLLANG_API_KEY=<your-api-key>` and get key from https://lab.ollang.com |
+
+---
+
+## Recommended HTTP Client
+
+**Prefer curl** for all requests. Node 18+ built-in fetch has a known issue with chunked transfer encoding that causes 500s on some endpoints.
+
+If using Node fetch (or axios), **always set the `Content-Length` header explicitly** to avoid chunked encoding. Alternatively, use `undici` or `node-fetch` with Content-Length enforcement.
+
+---
+
+## Custom Instructions Scope
+
+Custom instructions created via `ollang-custom-instructions` are **client-scoped** (tied to your API key) and **automatically applied to all orders** created with that key. There is no per-order override — instructions are account-wide guidance for the AI translator.
+
+**Distinction:**
+- **Custom Instructions** — AI guidance rules (tone, terminology, style) — apply to all orders
+- **Project Notes** — Context for a specific project — visible only on that project

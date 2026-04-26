@@ -13,7 +13,7 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
 
 ## Endpoint
 
-**POST** `https://api-integration.ollang.com/integration/order/create`
+**POST** `https://api-integration.ollang.com/integration/orders/create`
 
 ## Request Body (JSON)
 
@@ -55,7 +55,7 @@ Array of order objects, one per target language:
 
 ## Example (curl)
 ```bash
-curl -X POST https://api-integration.ollang.com/integration/order/create \
+curl -X POST https://api-integration.ollang.com/integration/orders/create \
   -H "X-Api-Key: $OLLANG_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -78,6 +78,17 @@ curl -X POST https://api-integration.ollang.com/integration/order/create \
 4. Collect target languages — support multiple at once
 5. Submit the order and return all `orderId` values
 6. Save the `orderId` values — needed for tracking, revisions, and QC
+
+## Custom Instructions
+
+Custom instructions created via `ollang-custom-instructions` are **automatically applied to all orders** created with your API key. You cannot override them per-order — they're account-wide AI guidance rules.
+
+If you want different translation behavior for a specific order, you must:
+1. Disable the custom instructions that conflict (via `ollang-custom-instructions` → update → set `active: false`)
+2. Create the order
+3. Re-enable the instructions afterward
+
+There is no `customInstructionId` parameter in the create order request — instructions are applied implicitly based on your client account.
 
 ## Error Codes
 - `400` - Invalid parameters (bad order type, invalid language code, etc.)
