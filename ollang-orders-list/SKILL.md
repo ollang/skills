@@ -22,7 +22,7 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
 |-----------|------|---------|-------------|
 | `pageOptions[page]` | number | 1 | Page number |
 | `pageOptions[take]` | number | 10 | Items per page (1–50) |
-| `pageOptions[orderBy]` | string | `id` | Sort field: `id`, `name`, `createdAt` |
+| `pageOptions[orderBy]` | string | `id` | Sort field: `id`, `name`, `createdAt`, `status` |
 | `pageOptions[orderDirection]` | string | `desc` | `asc` or `desc` |
 
 ### Filters

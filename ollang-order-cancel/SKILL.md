@@ -5,7 +5,7 @@ description: Cancel an active Ollang order. Use when the user wants to cancel a 
 
 # Ollang Cancel Order
 
-Cancel an active order. Only eligible orders (not yet completed or already cancelled) can be cancelled.
+Cancel an active order. Cancellation is irreversible. Only orders in `pending` or early `ongoing` status are typically eligible — orders already in progress, completed, or delivered usually cannot be cancelled.
 
 ## Authentication
 

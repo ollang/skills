@@ -65,7 +65,15 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
       { "id": "string", "explain": "string", "suggestedNewValue": "string" }
     ],
     "isLoading": false
-  }
+  },
+  "deliveryEvents": [
+    {
+      "type": "ai_delivered | translator_delivered | lsp_approved | order_delivered",
+      "occurredAt": "ISO8601",
+      "actorType": "ai | translator | lsp | system",
+      "actorId": "string or null"
+    }
+  ]
 }
 ```
 
@@ -83,6 +91,19 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
 | `qualityCheck` | Undergoing quality check |
 | `readyToSent` | Ready to be sent/delivered |
 
+### Delivery Events
+
+`deliveryEvents` records the order's delivery milestones, oldest first — a status is only a snapshot, but this array shows how the order got there:
+
+| Event Type | Meaning |
+|------------|---------|
+| `ai_delivered` | AI pipeline finished; AI results became available |
+| `translator_delivered` | A translator delivered their work |
+| `lsp_approved` | An LSP admin/PM approved a member's delivery |
+| `order_delivered` | The order reached a delivered/completed state |
+
+Empty array for orders that haven't reached a milestone yet, or orders created before delivery-event tracking existed (the log is not backfilled). The same event type can appear more than once (e.g., a re-delivery or rerun). `actorId` is null for `ai` and `system` events.
+
 ## Example (curl)
 ```bash
 curl -X GET https://api-integration.ollang.com/integration/orders/ORDER_ID \
@@ -97,6 +118,7 @@ curl -X GET https://api-integration.ollang.com/integration/orders/ORDER_ID \
 4. Highlight the `status` field prominently
 5. If `orderDocs` are present, list available documents and their download URLs
 6. If `latestEvaluation` is present, summarize the QC scores
+7. If the user asks about delivery history or timing, summarize `deliveryEvents` chronologically
 
 ## Error Codes
 - `401` - Invalid or missing API key

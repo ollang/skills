@@ -34,12 +34,28 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
   "projectDocs": [
     {
       "id": "string",
-      "type": "string",
-      "url": "string"
+      "name": "string",
+      "url": "string",
+      "type": "string (e.g., source_video, source_document, created_waveform, created_subtitle_embedded_video)",
+      "size": 0,
+      "duration": 0,
+      "wordCount": 0,
+      "sourceLanguage": "string",
+      "storageUrl": "string",
+      "waveformUrl": "string",
+      "thumbnailUrl": "string",
+      "projectId": "string",
+      "orderId": "string",
+      "clientId": "string",
+      "folderId": "string",
+      "createdAt": "ISO8601",
+      "updatedAt": "ISO8601"
     }
   ]
 }
 ```
+
+Optional document fields (`size`, `duration`, `wordCount`, `storageUrl`, `waveformUrl`, `thumbnailUrl`, `orderId`, `folderId`) are present only when applicable to the file type.
 
 ### Example
 ```bash

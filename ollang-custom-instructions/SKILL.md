@@ -44,6 +44,33 @@ curl -X GET https://api-integration.ollang.com/integration/custom-instructions \
 
 ---
 
+## Get Custom Instruction Suggestions
+
+**GET** `https://api-integration.ollang.com/integration/custom-instructions/suggestions`
+
+Returns a curated list of suggested custom instructions (templates) to adopt or adapt when creating your own.
+
+### Response (200)
+Array of suggestion objects:
+```json
+[
+  {
+    "key": "tone_and_register",
+    "value": "Match the formality level of the source. Business emails should remain professional.",
+    "description": "Instructions for maintaining appropriate tone and register",
+    "active": true
+  }
+]
+```
+
+### Example
+```bash
+curl -X GET https://api-integration.ollang.com/integration/custom-instructions/suggestions \
+  -H "X-Api-Key: $OLLANG_API_KEY"
+```
+
+---
+
 ## Create Custom Instruction
 
 **POST** `https://api-integration.ollang.com/integration/custom-instructions`
@@ -146,13 +173,14 @@ To understand how instructions relate to your orders:
 ## Behavior
 
 1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
-2. Determine the action: **list**, **create**, **update**, or **delete**
+2. Determine the action: **list**, **suggestions**, **create**, **update**, or **delete**
 3. For **list**: Display all instructions in a table format with id, key, value, active status, and description
-4. For **create**: Ask for `key`, `value`, and optional `description`; confirm before proceeding
-5. For **update**: Ask for `instructionId` and which fields to update; confirm before proceeding
-6. For **delete**: Ask for `instructionId`; confirm before deleting (this is destructive)
-7. Return confirmation and instruction details
-8. Suggest next steps (e.g., "Create an order to apply these instructions")
+4. For **suggestions**: Fetch the templates and offer to create instructions from them (possibly adapted)
+5. For **create**: Ask for `key`, `value`, and optional `description`; confirm before proceeding
+6. For **update**: Ask for `instructionId` and which fields to update; confirm before proceeding
+7. For **delete**: Ask for `instructionId`; confirm before deleting (this is destructive)
+8. Return confirmation and instruction details
+9. Suggest next steps (e.g., "Create an order to apply these instructions")
 
 ## Common Use Cases
 

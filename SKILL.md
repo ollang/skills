@@ -1,6 +1,6 @@
 ---
 name: ollang
-description: Master skill for the Ollang translation platform. Routes to the right Ollang sub-skill based on intent — upload files, create orders, check status, manage revisions, run QC, browse projects and folders. Use when the user mentions Ollang or wants to perform any translation/captioning/dubbing workflow.
+description: Master skill for the Ollang translation platform. Routes to the right Ollang sub-skill based on intent — upload files, create orders, check status, manage revisions, run QC, manage translation memories, translate Figma files, export content and spreadsheets, check credits, browse projects and folders. Use when the user mentions Ollang or wants to perform any translation/captioning/dubbing/localization workflow.
 ---
 
 # Ollang — Master Skill
@@ -22,8 +22,14 @@ This is the entry point for all Ollang API operations. Based on the user's inten
 | `ollang-revision` | User wants to report an issue or manage revisions on an order |
 | `ollang-human-review` | User wants to request or cancel human (linguist) review |
 | `ollang-qc-eval` | User wants to run a quality control evaluation on an order |
+| `ollang-subtitle-embedding` | User wants subtitles burned/hardcoded into the video |
+| `ollang-memory` | User wants to create or manage translation memories, or import translation units |
+| `ollang-content` | User wants to export/import content translations (i18n strings) as JSON |
+| `ollang-xlsx-export` | User wants an XLSX/Excel export of an order's or folders' segments |
+| `ollang-figma` | User wants to translate a Figma design file or track Figma orders |
+| `ollang-credits` | User wants their credit balance or a consumption/spend breakdown |
 | `ollang-project` | User wants to list or inspect projects |
-| `ollang-folder` | User wants to list or find folders |
+| `ollang-folder` | User wants to list or find folders, or batch-assign/unassign translators on a folder's orders |
 
 ## Full Workflow
 
@@ -37,6 +43,8 @@ A complete end-to-end translation workflow looks like this:
 5. Report issues        →  ollang-revision      →  create revisions if needed
 6. Upgrade to human     →  ollang-human-review  →  optional linguist review
 ```
+
+Optional steps: set up translation memories first (`ollang-memory`, applied via `selectedMemories` in `ollang-order-create`); after completion, burn subtitles into the video (`ollang-subtitle-embedding`) or export segments as a spreadsheet (`ollang-xlsx-export`).
 
 ## Authentication
 
@@ -54,6 +62,18 @@ Get your API key at https://lab.ollang.com.
 ```
 https://api-integration.ollang.com
 ```
+
+## Language Codes
+
+Language codes are mostly ISO 639-1 (`en`, `fr`, `de`), with regional and platform-specific variants for some locales. Watch for these platform conventions:
+
+- `pt` = Portuguese (**Brazil**), `pt-PT` = Portuguese (Portugal)
+- `es` = Spanish (**Spain**), `es-MX` = Spanish (LATAM)
+- `zh` = Chinese (Simplified), `zh-Hant` = Chinese (Traditional), `zh-TW` = Chinese (Taiwan)
+- `en` = English, `en-UK` = English (United Kingdom)
+- Arabic regional variants like `ar-EG`, `ar-AE`; French Canadian is `fr-CA`
+
+The full list lives at https://api-docs.ollang.com/apis/ollang-api-reference/supported-languages — pass the exact string shown there.
 
 ## Behavior
 

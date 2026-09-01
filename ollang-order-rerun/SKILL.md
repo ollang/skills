@@ -5,7 +5,7 @@ description: Rerun an Ollang order to regenerate translations using the latest A
 
 # Ollang Rerun Order
 
-Rerun an existing order to regenerate its output using the latest available AI models.
+Rerun an existing order to regenerate its output using the latest available AI models. The order must be in a **completed or delivered** state to be eligible; the results replace the previous translation.
 
 ## Authentication
 
@@ -50,7 +50,7 @@ curl -X POST https://api-integration.ollang.com/integration/orders/ORDER_ID/reru
 6. Suggest using `ollang-order-get` to monitor the order status
 
 ## Error Codes
-- `400` - Order is not eligible for rerun
+- `400` - Order is not eligible for rerun (only completed or delivered orders can be rerun)
 - `401` - Invalid or missing API key
 - `403` - Access denied
 - `404` - Order not found

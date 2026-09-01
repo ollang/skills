@@ -5,7 +5,7 @@ description: Manage revisions for Ollang orders — create, list, and delete rev
 
 # Ollang Revision Management
 
-Create, retrieve, and delete revision requests for orders.
+Create, retrieve, and delete revision requests for orders. Revisions can only be created for **completed or delivered** orders.
 
 ## Authentication
 
