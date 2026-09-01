@@ -50,10 +50,12 @@ That's it — the skills are now available in your agent.
 
 All skills (except `ollang-health`) require an API key from [lab.ollang.com](https://lab.ollang.com).
 
-Set the `OLLANG_API_KEY` environment variable before using the skills:
+Set the `OLLANG_API_KEY` environment variable before using the skills — run this in your own terminal, or add it to your shell profile or your project's `.env`:
 ```bash
 export OLLANG_API_KEY=<your-api-key>
 ```
+
+**Security:** never paste your API key into the agent conversation — chat transcripts may be stored or shared. The skills are designed to read the key only from the environment variable and to pass it via shell expansion (`$OLLANG_API_KEY`), so its value never appears in the conversation, logs, or files. If a key does end up in a chat, rotate it at [lab.ollang.com](https://lab.ollang.com).
 
 ---
 

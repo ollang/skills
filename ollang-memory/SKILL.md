@@ -9,7 +9,7 @@ Create and manage translation memories (TMs). A memory stores translation units 
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 > **Plan requirement:** Translation Memory is a plan-gated feature. If the account's plan doesn't include it, create requests return `403` with a message asking to upgrade.
 
@@ -193,7 +193,7 @@ curl -X GET https://api-integration.ollang.com/integration/memories/import-jobs/
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Determine the action: **list**, **create**, **get**, **rename**, **delete**, **import items**, or **check import job**
 3. For **create**: ask for a `title`; suggest importing items right after
 4. For **import**: batch items in chunks of at most 1000; return the `jobId` and poll the job endpoint until `status` is `completed` (mention vectorization for semantic matching)

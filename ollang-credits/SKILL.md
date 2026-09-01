@@ -9,7 +9,7 @@ Retrieve the account credit wallet and the per-provider-run consumption breakdow
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 > **Role requirement:** Both endpoints are restricted to **account owners and billing managers**. The API key must belong to a user with the `client_owner` or `client_accessBillings` role, otherwise the request is rejected with `403`.
 
@@ -122,7 +122,7 @@ curl -g "https://api-integration.ollang.com/integration/consumption?filter[from]
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Determine the action: **wallet balance** or **consumption breakdown**
 3. For **wallet**: display credits and USD equivalents; highlight `remainingUsd`
 4. For **consumption**: ask which filters to apply (date range, provider, order type, requestor, order ID, tag); **always include `-g`** in curl commands for bracket params

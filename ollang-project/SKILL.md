@@ -9,7 +9,7 @@ Retrieve a single project by ID or list all projects with filtering and paginati
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ---
 
@@ -117,7 +117,7 @@ curl -X GET "https://api-integration.ollang.com/integration/project?search=my+vi
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Determine action: get a specific project or list all projects
 3. For **get by ID**: ask for `projectId` and display all project details including docs
 4. For **list**: ask for optional search term and page size; display results in a table

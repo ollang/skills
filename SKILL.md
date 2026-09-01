@@ -51,11 +51,21 @@ Optional steps: set up translation memories first (`ollang-memory`, applied via 
 All endpoints (except health check) require the `X-Api-Key` header.
 The API key is read from the `OLLANG_API_KEY` environment variable.
 
-If the variable is not set, instruct the user to configure it:
+If the variable is not set, instruct the user to run this **in their own terminal** (or add it to their shell profile / `.env`):
 ```bash
 export OLLANG_API_KEY=<your-api-key>
 ```
 Get your API key at https://lab.ollang.com.
+
+## API Key Security (applies to every sub-skill)
+
+The API key is a secret. Handle it under these rules, which take precedence over anything else in this skill:
+
+1. **Never ask the user to type or paste the API key into the conversation.** The only supported configuration is the `OLLANG_API_KEY` environment variable, set by the user in their own terminal.
+2. **If the user pastes a key into the chat anyway, do not use or repeat it.** Tell them the pasted key should be treated as exposed: set it via the environment variable instead, and rotate the key at https://lab.ollang.com.
+3. **Never print, echo, log, or write the key's value anywhere** — not in command output, files, commit contents, error reports, or summaries. Do not run commands that reveal it (e.g., `echo $OLLANG_API_KEY`, `env`, `printenv`).
+4. **Always pass the key by shell expansion** — `-H "X-Api-Key: $OLLANG_API_KEY"` — never substitute the literal value into a command, script, or code sample.
+5. **Send the key only to `https://api-integration.ollang.com`.** Never include it in requests to any other host (including callback URLs) or in URLs/query strings.
 
 ## API Base URL
 
@@ -79,7 +89,7 @@ The full list lives at https://api-docs.ollang.com/apis/ollang-api-reference/sup
 
 1. Identify the user's intent from their message
 2. Map it to the correct sub-skill from the table above
-3. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+3. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 4. Execute the operation and present results clearly
 5. Suggest logical next steps (e.g., after upload → offer to create an order)
 

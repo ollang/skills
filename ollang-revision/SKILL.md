@@ -9,7 +9,7 @@ Create, retrieve, and delete revision requests for orders. Revisions can only be
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ---
 
@@ -101,7 +101,7 @@ curl -X DELETE https://api-integration.ollang.com/integration/revision/ORDER_ID/
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Determine the action: create, list, or delete a revision
 3. For **create**: ask for `orderId`, `type`, `time` (HH:MM:SS), and optional `description`
 4. For **list**: ask for `orderId` and display all revisions in a table

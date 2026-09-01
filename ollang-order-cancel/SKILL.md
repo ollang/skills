@@ -9,7 +9,7 @@ Cancel an active order. Cancellation is irreversible. Only orders in `pending` o
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ## Endpoint
 
@@ -34,7 +34,7 @@ curl -X POST https://api-integration.ollang.com/integration/orders/cancel/ORDER_
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Ask for the `orderId` if not provided
 3. Confirm the cancellation with the user before proceeding (this action may affect billing)
 4. Send the cancel request
