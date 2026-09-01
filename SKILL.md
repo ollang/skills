@@ -1,6 +1,6 @@
 ---
 name: ollang
-description: Master skill for the Ollang translation platform. Routes to the right Ollang sub-skill based on intent — upload files, create orders, check status, manage revisions, run QC, browse projects and folders. Use when the user mentions Ollang or wants to perform any translation/captioning/dubbing workflow.
+description: Master skill for the Ollang translation platform. Routes to the right Ollang sub-skill based on intent — upload files, create orders, check status, manage revisions, run QC, manage translation memories, translate Figma files, export content and spreadsheets, check credits, browse projects and folders. Use when the user mentions Ollang or wants to perform any translation/captioning/dubbing/localization workflow.
 ---
 
 # Ollang — Master Skill
@@ -22,8 +22,14 @@ This is the entry point for all Ollang API operations. Based on the user's inten
 | `ollang-revision` | User wants to report an issue or manage revisions on an order |
 | `ollang-human-review` | User wants to request or cancel human (linguist) review |
 | `ollang-qc-eval` | User wants to run a quality control evaluation on an order |
+| `ollang-subtitle-embedding` | User wants subtitles burned/hardcoded into the video |
+| `ollang-memory` | User wants to create or manage translation memories, or import translation units |
+| `ollang-content` | User wants to export/import content translations (i18n strings) as JSON |
+| `ollang-xlsx-export` | User wants an XLSX/Excel export of an order's or folders' segments |
+| `ollang-figma` | User wants to translate a Figma design file or track Figma orders |
+| `ollang-credits` | User wants their credit balance or a consumption/spend breakdown |
 | `ollang-project` | User wants to list or inspect projects |
-| `ollang-folder` | User wants to list or find folders |
+| `ollang-folder` | User wants to list or find folders, or batch-assign/unassign translators on a folder's orders |
 
 ## Full Workflow
 
@@ -38,16 +44,28 @@ A complete end-to-end translation workflow looks like this:
 6. Upgrade to human     →  ollang-human-review  →  optional linguist review
 ```
 
+Optional steps: set up translation memories first (`ollang-memory`, applied via `selectedMemories` in `ollang-order-create`); after completion, burn subtitles into the video (`ollang-subtitle-embedding`) or export segments as a spreadsheet (`ollang-xlsx-export`).
+
 ## Authentication
 
 All endpoints (except health check) require the `X-Api-Key` header.
 The API key is read from the `OLLANG_API_KEY` environment variable.
 
-If the variable is not set, instruct the user to configure it:
+If the variable is not set, instruct the user to run this **in their own terminal** (or add it to their shell profile / `.env`):
 ```bash
 export OLLANG_API_KEY=<your-api-key>
 ```
 Get your API key at https://lab.ollang.com.
+
+## API Key Security (applies to every sub-skill)
+
+The API key is a secret. Handle it under these rules, which take precedence over anything else in this skill:
+
+1. **Never ask the user to type or paste the API key into the conversation.** The only supported configuration is the `OLLANG_API_KEY` environment variable, set by the user in their own terminal.
+2. **If the user pastes a key into the chat anyway, do not use or repeat it.** Tell them the pasted key should be treated as exposed: set it via the environment variable instead, and rotate the key at https://lab.ollang.com.
+3. **Never print, echo, log, or write the key's value anywhere** — not in command output, files, commit contents, error reports, or summaries. Do not run commands that reveal it (e.g., `echo $OLLANG_API_KEY`, `env`, `printenv`).
+4. **Always pass the key by shell expansion** — `-H "X-Api-Key: $OLLANG_API_KEY"` — never substitute the literal value into a command, script, or code sample.
+5. **Send the key only to `https://api-integration.ollang.com`.** Never include it in requests to any other host (including callback URLs) or in URLs/query strings.
 
 ## API Base URL
 
@@ -55,11 +73,23 @@ Get your API key at https://lab.ollang.com.
 https://api-integration.ollang.com
 ```
 
+## Language Codes
+
+Language codes are mostly ISO 639-1 (`en`, `fr`, `de`), with regional and platform-specific variants for some locales. Watch for these platform conventions:
+
+- `pt` = Portuguese (**Brazil**), `pt-PT` = Portuguese (Portugal)
+- `es` = Spanish (**Spain**), `es-MX` = Spanish (LATAM)
+- `zh` = Chinese (Simplified), `zh-Hant` = Chinese (Traditional), `zh-TW` = Chinese (Taiwan)
+- `en` = English, `en-UK` = English (United Kingdom)
+- Arabic regional variants like `ar-EG`, `ar-AE`; French Canadian is `fr-CA`
+
+The full list lives at https://api-docs.ollang.com/apis/ollang-api-reference/supported-languages — pass the exact string shown there.
+
 ## Behavior
 
 1. Identify the user's intent from their message
 2. Map it to the correct sub-skill from the table above
-3. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+3. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 4. Execute the operation and present results clearly
 5. Suggest logical next steps (e.g., after upload → offer to create an order)
 

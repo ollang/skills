@@ -9,7 +9,7 @@ Create a new translation/captioning/dubbing order for an existing project.
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ## Endpoint
 
@@ -25,14 +25,16 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
 | `targetLanguageConfigs` | array | Yes | Target languages with optional rush delivery |
 | `orderSubType` | string | No | `closedCaption` or `timecodedTranscription` |
 | `dubbingStyle` | string | No | `overdub`, `lipsync`, or `audioDescription` |
-| `autoQc` | boolean | No | Trigger automatic QC evaluation after completion |
+| `callbackUrl` | string | No | URL (`http` or `https`) that receives a `POST` when the order completes (see Order Completion Callback below) |
+| `autoQc` | boolean | No | Run a QC evaluation automatically after the AI order completes (default `false`). Applies to top-level orders only — child orders are excluded |
+| `selectedMemories` | string[] | No | Translation memory IDs to apply (max 20, no duplicates). Get IDs via `ollang-memory`. Only document, subtitle/cc, and Adobe AE orders consume memories; other order types ignore this field |
 
 ### Order Types
 | Value | Description |
 |-------|-------------|
 | `cc` | Closed Captions |
 | `subtitle` | Subtitles (translation) |
-| `document` | Document Translation |
+| `document` | Document Translation — also covers **Image to Image (visual) translation** when the source is a JPEG/JPG/PNG from direct upload |
 | `aiDubbing` | AI Dubbing |
 | `studioDubbing` | Studio Dubbing |
 
@@ -53,6 +55,21 @@ Array of order objects, one per target language:
 ]
 ```
 
+## Order Completion Callback
+
+When `callbackUrl` is provided, Ollang sends a `POST` (`Content-Type: application/json`, **10-second timeout**) to that URL after the order completes. Callback failures do not affect the order — you can always confirm via `ollang-order-get`. Implement idempotent handling and validate payloads.
+
+Callback payload fields:
+| Field | Type | Description |
+|-------|------|-------------|
+| `orderId` | string | The completed order's ID |
+| `status` | string | Always `"completed"` |
+| `orderType` | string | e.g., `cc`, `subtitle`, `document`, `aiDubbing` |
+| `targetLanguage` | string | Target language code |
+| `completedAt` | string | Completion timestamp (ISO 8601) |
+| `orderDocs` | array | All documents on the order (source files, translated subtitles, embedded videos, dubbed audio, etc.) with `id`, `name`, `url`, `type`, `size`, `duration`, `wordCount`, `sourceLanguage`, `createdAt`, `updatedAt` |
+| `vttUrl` | string | Signed URL to the VTT subtitle file (valid 7 days); empty string if not applicable |
+
 ## Example (curl)
 ```bash
 curl -X POST https://api-integration.ollang.com/integration/orders/create \
@@ -66,18 +83,21 @@ curl -X POST https://api-integration.ollang.com/integration/orders/create \
       { "language": "es", "isRush": false },
       { "language": "fr", "isRush": false }
     ],
-    "autoQc": true
+    "callbackUrl": "https://your-domain.com/webhooks/order-completed",
+    "autoQc": true,
+    "selectedMemories": ["MEMORY_ID"]
   }'
 ```
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Confirm the `projectId` (from a previous upload or get-project)
 3. Determine `orderType` and `level` from the user's intent
 4. Collect target languages — support multiple at once
-5. Submit the order and return all `orderId` values
-6. Save the `orderId` values — needed for tracking, revisions, and QC
+5. Offer optional extras when relevant: `callbackUrl` (completion webhook), `autoQc`, `selectedMemories` (translation memories via `ollang-memory`)
+6. Submit the order and return all `orderId` values
+7. Save the `orderId` values — needed for tracking, revisions, and QC
 
 ## Custom Instructions
 

@@ -9,18 +9,27 @@ Upload files to the Ollang platform via the integration API.
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ## Direct File Upload
 
 **POST** `https://api-integration.ollang.com/integration/upload/direct`
 
-Uploads video, audio, document, or spreadsheet files and creates a project.
+Uploads video, audio, document, presentation, spreadsheet, or image files and creates a project.
+
+Supported formats include:
+- **Video**: MP4, AVI, MOV, WMV, FLV, MKV (max 30GB)
+- **Audio**: MP3, WAV, AAC, M4A, FLAC, OGG
+- **Documents**: DOCX, DOC, PDF, TXT, RTF, ODT (max 100MB)
+- **Presentations**: PPTX, PPT, ODP
+- **Spreadsheets**: XLSX, XLS, ODS, CSV
+- **Images (Image to Image translation)**: JPEG, JPG, PNG — upload the image here, then create a `document` order as usual
+- **Other**: HTML, XML, JSON, SRT, VTT
 
 ### Request (multipart/form-data)
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `file` | file | Yes | File to upload (video, audio, document, spreadsheet) |
+| `file` | file | Yes | File to upload (see supported formats above) |
 | `name` | string | Yes | Descriptive name for the uploaded content |
 | `sourceLanguage` | string | Yes | Source language code (e.g., `en`, `es`, `fr`) |
 | `notes` | array | No | Instruction objects with `details` and optional `timeStamp` (e.g., `[{"details": "Ignore subtitles for 30s", "timeStamp": "02:15:30"}]`) |
@@ -55,7 +64,7 @@ Associates a VTT subtitle file with an existing project.
 | `file` | file | Yes | VTT file (max 1GB) |
 | `projectId` | string | Yes | Target project ID |
 | `name` | string | Yes | Name for the document |
-| `sourceLanguage` | string | No | Source language code |
+| `sourceLanguage` | string | No | Source language code; the special value `all` is accepted for auto-detection workflows |
 
 ### Response (201)
 ```json
@@ -74,7 +83,7 @@ curl -X POST https://api-integration.ollang.com/integration/upload/vtt \
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Determine if uploading a new file (direct upload) or attaching a VTT to existing project
 3. For direct uploads: require `file`, `name`, `sourceLanguage`; optionally `folderId`
 4. For VTT uploads: require `file`, `projectId`, `name`
@@ -84,4 +93,4 @@ curl -X POST https://api-integration.ollang.com/integration/upload/vtt \
 ## Error Codes
 - `400` - Invalid parameters or unsupported file format
 - `401` - Invalid or missing API key
-- `413` - File too large
+- `413` - File too large (video max 30GB, documents max 100MB, VTT max 1GB)

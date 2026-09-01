@@ -9,7 +9,7 @@ Create, manage, and track custom translation instructions for your account. Thes
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ---
 
@@ -39,6 +39,33 @@ Array of instruction objects:
 ### Example
 ```bash
 curl -X GET https://api-integration.ollang.com/integration/custom-instructions \
+  -H "X-Api-Key: $OLLANG_API_KEY"
+```
+
+---
+
+## Get Custom Instruction Suggestions
+
+**GET** `https://api-integration.ollang.com/integration/custom-instructions/suggestions`
+
+Returns a curated list of suggested custom instructions (templates) to adopt or adapt when creating your own.
+
+### Response (200)
+Array of suggestion objects:
+```json
+[
+  {
+    "key": "tone_and_register",
+    "value": "Match the formality level of the source. Business emails should remain professional.",
+    "description": "Instructions for maintaining appropriate tone and register",
+    "active": true
+  }
+]
+```
+
+### Example
+```bash
+curl -X GET https://api-integration.ollang.com/integration/custom-instructions/suggestions \
   -H "X-Api-Key: $OLLANG_API_KEY"
 ```
 
@@ -145,14 +172,15 @@ To understand how instructions relate to your orders:
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
-2. Determine the action: **list**, **create**, **update**, or **delete**
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
+2. Determine the action: **list**, **suggestions**, **create**, **update**, or **delete**
 3. For **list**: Display all instructions in a table format with id, key, value, active status, and description
-4. For **create**: Ask for `key`, `value`, and optional `description`; confirm before proceeding
-5. For **update**: Ask for `instructionId` and which fields to update; confirm before proceeding
-6. For **delete**: Ask for `instructionId`; confirm before deleting (this is destructive)
-7. Return confirmation and instruction details
-8. Suggest next steps (e.g., "Create an order to apply these instructions")
+4. For **suggestions**: Fetch the templates and offer to create instructions from them (possibly adapted)
+5. For **create**: Ask for `key`, `value`, and optional `description`; confirm before proceeding
+6. For **update**: Ask for `instructionId` and which fields to update; confirm before proceeding
+7. For **delete**: Ask for `instructionId`; confirm before deleting (this is destructive)
+8. Return confirmation and instruction details
+9. Suggest next steps (e.g., "Create an order to apply these instructions")
 
 ## Common Use Cases
 

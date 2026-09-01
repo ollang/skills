@@ -35,8 +35,14 @@ That's it — the skills are now available in your agent.
 | `ollang-revision` | "report subtitle error", "create a revision" | Create, list, delete revisions |
 | `ollang-human-review` | "request human review", "cancel human review" | Upgrade/downgrade to linguist review |
 | `ollang-qc-eval` | "run QC", "evaluate translation quality" | AI quality scores (accuracy, fluency, tone, cultural fit) |
+| `ollang-subtitle-embedding` | "burn in subtitles", "hardcode subtitles into the video" | Request subtitle embedding for an order |
+| `ollang-memory` | "create a translation memory", "import TM entries" | Manage translation memories + async item imports |
+| `ollang-content` | "export my translations as JSON", "import locale strings" | Content database export/import (i18n key-value pairs) |
+| `ollang-xlsx-export` | "export order as Excel", "spreadsheet of folder translations" | Single-order and bulk-folder XLSX exports |
+| `ollang-figma` | "translate this Figma file", "status of my Figma orders" | Figma import + translation orders (requires Figma OAuth connection) |
+| `ollang-credits` | "what's my credit balance?", "show consumption breakdown" | Credit wallet + consumption line items (billing roles only) |
 | `ollang-project` | "list my projects", "get project details" | Browse and inspect projects |
-| `ollang-folder` | "list my folders", "find folder ID" | Browse folder structure |
+| `ollang-folder` | "list my folders", "assign translator to folder orders" | Browse folders + batch translator assignment |
 
 ---
 
@@ -44,10 +50,12 @@ That's it — the skills are now available in your agent.
 
 All skills (except `ollang-health`) require an API key from [lab.ollang.com](https://lab.ollang.com).
 
-Set the `OLLANG_API_KEY` environment variable before using the skills:
+Set the `OLLANG_API_KEY` environment variable before using the skills — run this in your own terminal, or add it to your shell profile or your project's `.env`:
 ```bash
 export OLLANG_API_KEY=<your-api-key>
 ```
+
+**Security:** never paste your API key into the agent conversation — chat transcripts may be stored or shared. The skills are designed to read the key only from the environment variable and to pass it via shell expansion (`$OLLANG_API_KEY`), so its value never appears in the conversation, logs, or files. If a key does end up in a chat, rotate it at [lab.ollang.com](https://lab.ollang.com).
 
 ---
 
@@ -69,6 +77,8 @@ https://api-integration.ollang.com
 4. ollang-qc-eval    →  run quality check on completed order
 5. ollang-revision   →  report any issues
 ```
+
+Optional: prepare translation memories up front (`ollang-memory`), then pass them via `selectedMemories` when creating orders. After completion, burn subtitles into the video (`ollang-subtitle-embedding`) or export segments as XLSX (`ollang-xlsx-export`).
 
 ---
 

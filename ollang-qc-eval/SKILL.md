@@ -5,11 +5,11 @@ description: Run a QC (Quality Control) evaluation on an Ollang order to get AI-
 
 # Ollang QC Evaluation
 
-Run an AI-powered quality control evaluation on a completed order. Scores accuracy, fluency, tone, and cultural fit.
+Run an AI-powered quality control evaluation on a **completed or delivered** order. Scores accuracy, fluency, tone, and cultural fit. The evaluation runs asynchronously — the initial response confirms it started, and results arrive later (via callback or `ollang-order-get`'s `latestEvaluation`).
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ## Endpoint
 
@@ -28,9 +28,12 @@ All requests require the `X-Api-Key` header. The API key is read from the `OLLAN
 | `tone` | boolean | `true` | Evaluate tone consistency |
 | `culturalFit` | boolean | `true` | Evaluate cultural appropriateness |
 | `customPrompt` | string | — | Additional evaluation instructions |
-| `callbackUrl` | string | — | HTTPS webhook URL for async results |
+| `callbackUrl` | string | — | HTTPS webhook URL for async results. Must be a valid **HTTPS** URL on a publicly accessible host — private IPs and `localhost` are rejected |
 
 ## Response (200)
+
+The initial response typically contains only `success`, `message`, `evalId`, `creditsUsed`, and `isProcessing: true` — score fields are populated once processing finishes:
+
 ```json
 {
   "success": true,
@@ -84,13 +87,31 @@ curl -X POST https://api-integration.ollang.com/integration/orders/ORDER_ID/qc \
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Ask for the `orderId` if not provided
 3. Ask which metrics to evaluate (default: all four enabled)
 4. Ask if they want a `callbackUrl` for async results (useful for large orders)
 5. Submit the evaluation request
 6. If `isProcessing` is true, inform the user results will be ready shortly or sent to the callback
 7. If results are immediate, display scores in a readable format with summary
+8. Without a callback, results can be read later from `latestEvaluation` in `ollang-order-get`
+
+## Callback Payload
+
+When `callbackUrl` is provided, the completed evaluation is POSTed to it as JSON (10-second timeout; a callback failure doesn't affect the evaluation):
+
+```json
+{
+  "orderId": "string",
+  "evalId": "string",
+  "status": "completed",
+  "textSummary": "string",
+  "scores": [ { "name": "accuracy", "score": 92, "details": "..." } ],
+  "segmentEvals": [
+    { "segmentId": "string", "scores": [{ "name": "accuracy", "score": 95 }], "comments": "string" }
+  ]
+}
+```
 
 ## Error Codes
 - `400` - Order not eligible for QC (wrong type or status)

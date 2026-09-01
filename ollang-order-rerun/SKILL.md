@@ -5,11 +5,11 @@ description: Rerun an Ollang order to regenerate translations using the latest A
 
 # Ollang Rerun Order
 
-Rerun an existing order to regenerate its output using the latest available AI models.
+Rerun an existing order to regenerate its output using the latest available AI models. The order must be in a **completed or delivered** state to be eligible; the results replace the previous translation.
 
 ## Authentication
 
-All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run: `export OLLANG_API_KEY=<your-api-key>` (get it from https://lab.ollang.com).
+All requests require the `X-Api-Key` header. The API key is read from the `OLLANG_API_KEY` environment variable. If not set, instruct the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal (get the key from https://lab.ollang.com). **Never ask the user to share the key in the conversation, and never print, echo, or log its value** — pass it only via shell expansion of `$OLLANG_API_KEY`.
 
 ## Endpoint
 
@@ -42,7 +42,7 @@ curl -X POST https://api-integration.ollang.com/integration/orders/ORDER_ID/reru
 
 ## Behavior
 
-1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to set it with: `export OLLANG_API_KEY=<your-api-key>`
+1. Read the API key from the `OLLANG_API_KEY` environment variable. If not set, tell the user to run `export OLLANG_API_KEY=<your-api-key>` in their own terminal — never ask them to share the key in the conversation
 2. Ask for the `orderId` if not provided
 3. Confirm with the user — rerunning will regenerate the translation (may consume credits)
 4. Send the rerun request
@@ -50,7 +50,7 @@ curl -X POST https://api-integration.ollang.com/integration/orders/ORDER_ID/reru
 6. Suggest using `ollang-order-get` to monitor the order status
 
 ## Error Codes
-- `400` - Order is not eligible for rerun
+- `400` - Order is not eligible for rerun (only completed or delivered orders can be rerun)
 - `401` - Invalid or missing API key
 - `403` - Access denied
 - `404` - Order not found
