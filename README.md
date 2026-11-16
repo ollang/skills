@@ -14,6 +14,7 @@ Upload, translate, caption, dub, review, and export content from your AI agent, 
 [![API docs](https://img.shields.io/badge/docs-api--docs.ollang.com-0f0d1e?style=flat-square)](https://api-docs.ollang.com)
 [![MCP server](https://img.shields.io/badge/MCP-mcp.ollang.com-0f0d1e?style=flat-square)](https://api-docs.ollang.com/mcp/overview)
 [![Last commit](https://img.shields.io/github/last-commit/ollang/skills?style=flat-square&color=6148f9)](https://github.com/ollang/skills/commits/main)
+[![License: MIT](https://img.shields.io/badge/license-MIT-6148f9?style=flat-square)](LICENSE)
 
 **Works with** Claude Code · OpenAI Codex · Cursor · Devin · any agent that supports the skills standard
 
@@ -174,6 +175,10 @@ All skills (except `ollang-health`) require an API key from [lab.ollang.com](htt
 ## 🤝 Contributing
 
 Each `ollang-*/SKILL.md` owns one operation, and the root [`SKILL.md`](SKILL.md) routes to it. When you add a skill, update the router and this README together, and check request examples against the [API docs](https://api-docs.ollang.com). See [`AGENTS.md`](AGENTS.md) for the full guidelines.
+
+## 📄 License
+
+[MIT](LICENSE) © Ollang Inc. The license covers the code and documentation in this repository; the Ollang name and logo are not licensed under it.
 
 <div align="center">
 <br>
