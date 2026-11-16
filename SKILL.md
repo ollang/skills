@@ -97,7 +97,7 @@ The full list lives at https://api-docs.ollang.com/apis/ollang-api-reference/sup
 
 ## Reading Error Responses
 
-API errors use a generic envelope with three fields — **always inspect the `detail` field**, not `error` or `message`, as it's the only signal that distinguishes them:
+API errors use a generic envelope. **When a `detail` field is present, inspect it** rather than `error` or `message`, as it's the most specific signal. Authentication failures (HTTP 401) have no `detail`; their reason is in `message` (see below).
 
 ```json
 {
@@ -114,8 +114,9 @@ API errors use a generic envelope with three fields — **always inspect the `de
 |------------------|---------|-----|
 | `Cannot POST /...` | Wrong endpoint path (typo) | Check endpoint URL in the skill docs |
 | `Unexpected token` | Request body is not valid JSON | Check shell quoting in curl `-d` flag; use single quotes around JSON |
-| `The first argument must be of type string ...` | Downstream microservice bug with Node fetch (chunked encoding issue) | Use curl instead, or set `Content-Length` header explicitly |
-| `Invalid or missing API key` | API key missing or invalid | Run `export OLLANG_API_KEY=<your-api-key>` and get key from https://lab.ollang.com |
+| `The first argument must be of type string ...` | The `X-Api-Key` value is not a valid Ollang API key (mistyped, truncated, or extra quotes/whitespace). It may come back as HTTP 500 instead of 401; it is not a transient error, so do not retry | Re-copy the key from https://lab.ollang.com and run `export OLLANG_API_KEY=<your-api-key>` |
+
+Authentication failures with HTTP 401 carry the reason in `message` (there is no `detail`): `API Key is missing` when the header is absent, `Invalid API Key` when the key is unknown, expired, or malformed. Do not retry them; fix the key.
 
 ---
 
